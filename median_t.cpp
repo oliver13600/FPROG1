@@ -1,13 +1,15 @@
 #include <iostream>
 
 // Global variables
-double a, b, c;
+//double a, b, c;
 
 // Silly square function that is not immutable and not pure
-double silly_square(double x) {
+const double silly_square(const double x)
+{
     std::cout << "Calculating the silly square of " << x << "\n";
     double result = 0;
-    for (int i = 0; i < x; ++i) {
+    for (int i = 0; i < x; ++i)
+    {
         result += x;
         std::cout << "Iteration " << i + 1 << ": Current result = " << result << "\n";
     }
@@ -15,29 +17,37 @@ double silly_square(double x) {
 }
 
 // Helper function to calculate square root without using std::sqrt()
-double square_root(double x, double epsilon = 1e-10, int max_iterations = 1000) {
+const double square_root(const double x, const double epsilon = 1e-10, const int max_iterations = 1000)
+{
     std::cout << "Calculating the square root of " << x << "\n";
-    if (x < 0) {
+    if (x < 0)
+    {
         return -1; // Invalid input
     }
-    if (x == 0) {
+    if (x == 0)
+    {
         return 0;
     }
 
     double low = 0, high = x;
     double mid;
-    for (int i = 0; i < max_iterations; ++i) {
+    for (int i = 0; i < max_iterations; ++i)
+    {
         mid = (low + high) / 2.0;
         double mid_square = mid * mid;
         std::cout << "Iteration " << i + 1 << ": Midpoint = " << mid << ", Midpoint squared = " << mid_square << "\n";
 
-        if (mid_square > x) {
+        if (mid_square > x)
+        {
             high = mid;
-        } else if (mid_square < x) {
+        }
+        else if (mid_square < x)
+        {
             low = mid;
         }
 
-        if (high - low < epsilon) {
+        if (high - low < epsilon)
+        {
             break;
         }
     }
@@ -45,23 +55,25 @@ double square_root(double x, double epsilon = 1e-10, int max_iterations = 1000) 
     return mid;
 }
 
-double calculate_median() {
+double calculate_median(const double a, const double b, const double c)
+{
     std::cout << "Calculating the median of a triangle with sides a = " << a << ", b = " << b << ", c = " << c << "\n";
     double result = 0.5 * square_root(2 * silly_square(b) + 2 * silly_square(c) - silly_square(a));
     return result;
 }
 
-int main() {
-    a = 3;
-    b = 4;
-    c = 5;
+int main()
+{
+    double a = 3;
+    double b = 4;
+    double c = 5;
     std::cout << "Triangle sides: a = " << a << ", b = " << b << ", c = " << c << "\n";
 
-    double median_a = calculate_median();
+    double median_a = calculate_median(a, b, c);
     a = 4, b = 3, c = 5;
-    double median_b = calculate_median();
+    double median_b = calculate_median(a, b, c);
     a = 5, b = 3, c = 4;
-    double median_c = calculate_median();
+    double median_c = calculate_median(a, b, c);
 
     std::cout << "Medians:\n";
     std::cout << "Median from vertex A: " << median_a << "\n";

@@ -1,55 +1,66 @@
 #include <iostream>
 #include <utility>
 #include <complex>
+#include <sstream>
+#include <stdint.h>
+
+
 
 typedef std::complex<double> complex;
 
-double
-square (double e)
+const std::tuple<double, std::string> square(const double e)
 {
-	double dummy=e;
-	double dummy2=e;
-  for (int i=1;i<dummy2;i++)
-  	{
-  		e=e+dummy;
-  		std::cout << "i: " << i << " dummy:" << dummy << " e:" << e << std::endl;
-  	}
-  std::cout << "square:" << e << std::endl;
-  return e;
+  std::stringstream output;
+  double dummy = e;
+  double dummy2 = e;
+  double result = e;
+  for (int i = 1; i < dummy2; i++)
+  {
+    result = result + dummy;
+    output << "i: " << i << " dummy:" << dummy << " e:" << result << std::endl;
+  }
+  output << "square:" << result;
+  return make_tuple(result, output.str());
 }
 
-inline float squareroot(float number)
+const inline float squareroot(const float number)
 {
-    union Conv {
-        float    f;
-        uint32_t i;
-    };
-    Conv conv;
-    conv.f= number;
-    conv.i = 0x5f3759df - (conv.i >> 1);
-    conv.f *= 1.5F - (number * 0.5F * conv.f * conv.f);
-    return 1/conv.f;
+  union Conv
+  {
+    float f;
+    uint32_t i;
+  };
+  Conv conv;
+  conv.f = number;
+  conv.i = 0x5f3759df - (conv.i >> 1);
+  conv.f *= 1.5F - (number * 0.5F * conv.f * conv.f);
+  return 1 / conv.f;
 }
 
-std::pair<complex, complex>
- solve_quadratic_equation(double a, double b, double c)
+const std::pair<complex, complex> solve_quadratic_equation(const double a, const double x, const double y, const double squareOfB)
 {
+  double b = x;
+  double c = y;
   b /= a;
   c /= a;
-  double discriminant = square(b)-4*c;
+  double discriminant = squareOfB - 4 * c;
   if (discriminant < 0)
-    return std::make_pair(complex(-b/2, squareroot(-discriminant)/2),
-                          complex(-b/2, -squareroot(-discriminant)/2));
+    return std::make_pair(complex(-b / 2, squareroot(-discriminant) / 2),
+                          complex(-b / 2, -squareroot(-discriminant) / 2));
 
   double root = std::sqrt(discriminant);
-  double solution1 = (b > 0)? (-b - root)/2
-                            : (-b + root)/2;
+  double solution1 = (b > 0) ? (-b - root) / 2
+                             : (-b + root) / 2;
 
-  return std::make_pair(solution1, c/solution1);
+  return std::make_pair(solution1, c / solution1);
 }
 
 int main()
 {
-  std::pair<complex, complex> result = solve_quadratic_equation(3, 4, 5);
+  double x = 4;
+  x /= 3;
+  auto results = square(x);
+  std::cout << std::get<1>(results) << std::endl;
+  std::pair<complex, complex> result = solve_quadratic_equation(3, 4, 5, std::get<0>(results));
   std::cout << result.first << ", " << result.second << std::endl;
 }
